@@ -1,19 +1,41 @@
 package e1;
 import org.junit.jupiter.api.*;
+
+import e1.checker.KnightMoveChecker;
+import e1.grid.GridProperties;
+import e1.grid.GridPropertiesImpl;
+import e1.logic.Logics;
+import e1.logicFactory.LogicFactory;
+import e1.logicFactory.LogicFactoryImpl;
+import e1.pieces.GamePiece;
+import e1.piecesFactory.PieceFactoryImpl;
+import e1.piecesFactory.PiecesFactory;
+
 import static org.junit.jupiter.api.Assertions.*;
 public class LogicTest {
 
+  LogicFactory logicFactory;
   Logics logic;
   int size;
   Pair<Integer, Integer> knightPosition;
   Pair<Integer, Integer> pawnPosition;
+  PiecesFactory piecesFactory;
+  KnightMoveChecker knightMoveChecker;
+  GridProperties gridProperties;
+  GamePiece knight;
+  GamePiece idlePiece;
 
   @BeforeEach
   void beforeEach(){
     size = 5;
-    logic = new LogicsImpl(size);
+    logicFactory = new LogicFactoryImpl();
+    logic = logicFactory.createCleanLogic(size);
     knightPosition = new Pair<>(0, 0);
     pawnPosition = new Pair<>(size-1, size-1);
+    gridProperties = new GridPropertiesImpl(size);
+    knightMoveChecker = new KnightMoveChecker(gridProperties);
+    piecesFactory = new PieceFactoryImpl(gridProperties);
+    knight = piecesFactory.createKnight();
 }
 
 
@@ -74,6 +96,33 @@ public class LogicTest {
       () -> assertFalse(logic.hasKnight(wrongMove.getX(), wrongMove.getY())),
       () -> assertTrue(logic.hasKnight(knightPosition.getX(), knightPosition.getY()))
     );
+  }
+
+  @Test
+  public void checkPositionInGrid(){
+    GridProperties gridProperties = new GridPropertiesImpl(size);
+    assertFalse(knightMoveChecker.checkIsOutsideGrid(1, 1));
+  }
+
+  @Test
+  public void checkInvalidMoveKnight(){
+    Pair<Integer, Integer> firstMove = new Pair<Integer,Integer>(1, 1);
+    GridProperties gridProperties = new GridPropertiesImpl(size);
+    KnightMoveChecker knightMoveChecker = new KnightMoveChecker(gridProperties);
+    assertFalse(knightMoveChecker.checkKnightMove(knightPosition, firstMove));
+  }
+
+  @Test
+  public void checkValidMoveKnight(){
+    Pair<Integer, Integer> firstMove = new Pair<Integer,Integer>(2,1);
+    KnightMoveChecker knightMoveChecker = new KnightMoveChecker(gridProperties);
+    assertTrue(knightMoveChecker.checkKnightMove(knightPosition, firstMove));
+  }
+
+  @Test
+  public void checkMoveKnight(){
+    Pair<Integer, Integer> firstMove = new Pair<Integer,Integer>(1,2);
+    assertTrue(knight.move(firstMove.getX(), firstMove.getY()));
   }
 
   @Test
