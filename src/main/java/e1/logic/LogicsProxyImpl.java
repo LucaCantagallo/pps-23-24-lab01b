@@ -7,15 +7,14 @@ import e1.pieces.GamePiece;
 import e1.piecesFactory.PieceFactoryImpl;
 import e1.piecesFactory.PiecesFactory;
 
-public class CleanLogicsImpl implements Logics {
+public class LogicsProxyImpl implements Logics {
 
     private PiecesFactory pieceFactory;
     private GamePiece knight;
     private GamePiece idlePawn;
-
     private GridProperties gridProperties;
 
-    public CleanLogicsImpl(int size){
+    public LogicsProxyImpl(int size){
     	this.gridProperties = new GridPropertiesImpl(size);
         this.pieceFactory = new PieceFactoryImpl(this.gridProperties);
         this.knight = this.pieceFactory.createKnight();

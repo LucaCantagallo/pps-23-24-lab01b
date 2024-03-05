@@ -100,7 +100,6 @@ public class LogicTest {
 
   @Test
   public void checkPositionInGrid(){
-    GridProperties gridProperties = new GridPropertiesImpl(size);
     assertFalse(knightMoveChecker.checkIsOutsideGrid(1, 1));
   }
 
@@ -190,6 +189,5 @@ public class LogicTest {
       () -> assertTrue(logic.hasKnight(finalMove.getX(), finalMove.getY()))
     );
   }
-
 
 }

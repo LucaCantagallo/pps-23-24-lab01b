@@ -2,7 +2,7 @@ package e1;
 
 import javax.swing.*;
 
-import e1.logic.CleanLogicsImpl;
+import e1.logic.LogicsProxyImpl;
 import e1.logic.Logics;
 import e1.logic.LogicsImpl;
 
@@ -19,7 +19,7 @@ public class GUI extends JFrame {
     private final static int SIZE = 5;
     
     public GUI() {
-        this.logics = new CleanLogicsImpl(SIZE);
+        this.logics = new LogicsProxyImpl(SIZE);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(100*SIZE, 100*SIZE);
         
