@@ -27,19 +27,18 @@ public class GUI extends JFrame {
         ActionListener onClick = (e)->{
             final JButton bt = (JButton)e.getSource();
             final Pair<Integer,Integer> pos = buttons.get(bt);
-            boolean aMineWasFound = false; // call the logic here to tell it that cell at 'pos' has been seleced
+            boolean aMineWasFound = logics.isBomb(pos); // call the logic here to tell it that cell at 'pos' has been seleced
+            boolean isThereVictory = logics.victory();
+                
             if (aMineWasFound) {
                 quitGame();
                 JOptionPane.showMessageDialog(this, "You lost!!");
-            } else {
-                drawBoard();            	
-            }
-            boolean isThereVictory = false; // call the logic here to ask if there is victory
-            if (isThereVictory){
+            } else if(isThereVictory) {
                 quitGame();
                 JOptionPane.showMessageDialog(this, "You won!!");
-                System.exit(0);
+                System.exit(0);   	
             }
+            drawBoard();  
         };
 
         MouseInputListener onRightClick = new MouseInputAdapter() {
@@ -49,8 +48,10 @@ public class GUI extends JFrame {
                 if (bt.isEnabled()){
                     final Pair<Integer,Integer> pos = buttons.get(bt);
                     // call the logic here to put/remove a flag
+                    logics.hit(pos);
                 }
                 drawBoard(); 
+
             }
         };
                 
@@ -70,9 +71,12 @@ public class GUI extends JFrame {
     private void quitGame() {
         this.drawBoard();
     	for (var entry: this.buttons.entrySet()) {
-            // call the logic here
-            // if this button is a mine, draw it "*"
-            // disable the button
+            JButton bt = entry.getKey();
+            Pair<Integer, Integer> position = entry.getValue();
+            if(bt.isEnabled()){
+                bt.setText(logics.isBomb(position) ? "*" : "W");
+            }
+            bt.setEnabled(false);
     	}
     }
 
@@ -81,7 +85,30 @@ public class GUI extends JFrame {
             // call the logic here
             // if this button is a cell with counter, put the number
             // if this button has a flag, put the flag
+            JButton bt = entry.getKey();
+            Pair<Integer, Integer> position = entry.getValue();
+            if(bt.isEnabled()){
+                String numberText = logics.getNumber(position);
+                System.out.println(numberText);
+                
+                bt.setText(numberText);
+                bt.setEnabled(!logics.hasNumber(position));
+                recurrentZeros(numberText, position);
+            }
     	}
+    }
+
+    private void recurrentZeros(String numberText, Pair<Integer, Integer> position){
+        if(numberText!="" && Integer.parseInt(numberText) == 0){
+            hitTheAdiacents(position);
+        }
+    }
+
+    private void hitTheAdiacents(Pair<Integer, Integer> position) {
+        for (Pair<Integer,Integer> c : logics.setAdiacentCells(position)) {
+            logics.hit(c);
+            drawBoard();
+        }
     }
     
 }
