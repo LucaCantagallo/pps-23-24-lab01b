@@ -1,15 +1,11 @@
-package e2.cells;
-
-import e2.Pair;
+package e2;
 
 public interface Cell {
 
-    Pair<Integer, Integer> position();
-    int getX();
-    int getY();
     String textValue();
-    int value();
     boolean hasValue();
+    void setValue(int value);
     boolean isBomb();
+    void activeBomb();
 
 }

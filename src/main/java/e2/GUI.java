@@ -5,7 +5,6 @@ import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.MouseInputListener;
 
 import java.util.*;
-import java.util.Map.Entry;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -89,7 +88,6 @@ public class GUI extends JFrame {
             Pair<Integer, Integer> position = entry.getValue();
             if(bt.isEnabled()){
                 String numberText = logics.getNumber(position);
-                System.out.println(numberText);
                 
                 bt.setText(numberText);
                 bt.setEnabled(!logics.hasNumber(position));
@@ -100,15 +98,8 @@ public class GUI extends JFrame {
 
     private void recurrentZeros(String numberText, Pair<Integer, Integer> position){
         if(numberText!="" && Integer.parseInt(numberText) == 0){
-            hitTheAdiacents(position);
-        }
-    }
-
-    private void hitTheAdiacents(Pair<Integer, Integer> position) {
-        for (Pair<Integer,Integer> c : logics.setAdiacentCells(position)) {
-            logics.hit(c);
             drawBoard();
         }
     }
-    
+
 }

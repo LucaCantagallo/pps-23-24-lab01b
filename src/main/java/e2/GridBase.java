@@ -1,10 +1,8 @@
 package e2;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class GridBase implements Grid{
@@ -12,12 +10,12 @@ public class GridBase implements Grid{
     private int size;
     Map<Pair<Integer,Integer>,Cell> cells;
 
-    public GridBase(int size, int numberOfBombs){
+    public GridBase(int size){
         this.size = size;
         this.cells = new HashMap<>();
 
         for(int i = 0; i <this.size; i++){
-            for(int j = 0; j<this.size;j++){
+            for(int j = 0; j<this.size; j++){
                 this.cells.put(new Pair<Integer,Integer>(i, j), new CellBase());
             }
         }
@@ -35,25 +33,59 @@ public class GridBase implements Grid{
 
     @Override
     public Set<Pair<Integer, Integer>> mines() {
-        return cells.entrySet().stream().filter(c -> cells.get(c).isBomb()).collect(Collectors.toSet());
+        return cells.keySet().stream().filter(c -> cells.get(c).isBomb()).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Pair<Integer, Integer>> emptyCells() {
+        return cells.keySet().stream().filter(c -> !cells.get(c).hasValue())
+                                        .filter(c -> !cells.get(c).isBomb())
+                                        .collect(Collectors.toSet());
     }
 
     @Override
     public int countAdiacent(Pair<Integer, Integer> cell) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'countAdiacent'");
+        return (int) this.adiacentMines(cell).stream().count();
     }
 
     @Override
     public Set<Pair<Integer, Integer>> adiacentMines(Pair<Integer, Integer> cell) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'adiacentMines'");
+        Set<Pair<Integer, Integer>> adiacents = this.mines();
+        return adiacents.stream().filter(el -> el.getX() >= cell.getX()-1)
+                                    .filter(el -> el.getY() >= cell.getY()-1)
+                                    .filter(el -> el.getX() <= cell.getX()+1)
+                                    .filter(el -> el.getY() <= cell.getY()+1)
+                                    .collect(Collectors.toSet());
+    }
+
+    private Set<Pair<Integer, Integer>> adiacentEmptyCells(Pair<Integer, Integer> cell) {
+        Set<Pair<Integer, Integer>> adiacents = this.emptyCells();
+        return adiacents.stream().filter(el -> el.getX() >= cell.getX()-1)
+                                    .filter(el -> el.getY() >= cell.getY()-1)
+                                    .filter(el -> el.getX() <= cell.getX()+1)
+                                    .filter(el -> el.getY() <= cell.getY()+1)
+                                    .collect(Collectors.toSet());
     }
 
     @Override
     public void hit(Pair<Integer, Integer> cell) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hit'");
+        int numberMinesAround = countAdiacent(cell);
+        this.cells.get(cell).setValue(numberMinesAround);
+        if(numberMinesAround==0){
+            this.zeroMines(cell);
+        }
+
+    }
+
+    private void zeroMines(Pair<Integer, Integer> cell){
+        for (Pair<Integer,Integer> c : this.adiacentEmptyCells(cell)) {
+            this.hit(c);
+        };
+    }
+
+    @Override
+    public Cell cell(Pair<Integer, Integer> cell) {
+        return this.cells.get(cell);
     }
 
 }
