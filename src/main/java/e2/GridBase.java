@@ -43,28 +43,19 @@ public class GridBase implements Grid{
                                         .collect(Collectors.toSet());
     }
 
+    private Set<Pair<Integer, Integer>> adiacentStrategy(Pair<Integer, Integer> cell, Set<Pair<Integer,Integer>> cells) {
+        Set<Pair<Integer, Integer>> adiacents = cells;
+        return adiacents.stream().filter(el -> el.getX() >= cell.getX()-1)
+                                    .filter(el -> el.getY() >= cell.getY()-1)
+                                    .filter(el -> el.getX() <= cell.getX()+1)
+                                    .filter(el -> el.getY() <= cell.getY()+1)
+                                    .collect(Collectors.toSet());
+    }
+
+    
     @Override
     public int countAdiacent(Pair<Integer, Integer> cell) {
-        return (int) this.adiacentMines(cell).stream().count();
-    }
-
-    @Override
-    public Set<Pair<Integer, Integer>> adiacentMines(Pair<Integer, Integer> cell) {
-        Set<Pair<Integer, Integer>> adiacents = this.mines();
-        return adiacents.stream().filter(el -> el.getX() >= cell.getX()-1)
-                                    .filter(el -> el.getY() >= cell.getY()-1)
-                                    .filter(el -> el.getX() <= cell.getX()+1)
-                                    .filter(el -> el.getY() <= cell.getY()+1)
-                                    .collect(Collectors.toSet());
-    }
-
-    private Set<Pair<Integer, Integer>> adiacentEmptyCells(Pair<Integer, Integer> cell) {
-        Set<Pair<Integer, Integer>> adiacents = this.emptyCells();
-        return adiacents.stream().filter(el -> el.getX() >= cell.getX()-1)
-                                    .filter(el -> el.getY() >= cell.getY()-1)
-                                    .filter(el -> el.getX() <= cell.getX()+1)
-                                    .filter(el -> el.getY() <= cell.getY()+1)
-                                    .collect(Collectors.toSet());
+        return (int) this.adiacentStrategy(cell, mines()).stream().count();
     }
 
     @Override
@@ -78,7 +69,7 @@ public class GridBase implements Grid{
     }
 
     private void zeroMines(Pair<Integer, Integer> cell){
-        for (Pair<Integer,Integer> c : this.adiacentEmptyCells(cell)) {
+        for (Pair<Integer,Integer> c : this.adiacentStrategy(cell, this.emptyCells())) {
             this.hit(c);
         };
     }

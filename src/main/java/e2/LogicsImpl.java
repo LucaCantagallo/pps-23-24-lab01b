@@ -1,11 +1,5 @@
 package e2;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-//import java.util.Random;
 
 public class LogicsImpl implements Logics {
 
@@ -56,6 +50,11 @@ public class LogicsImpl implements Logics {
     @Override
     public boolean hasNumber(Pair<Integer, Integer> cell) {
         return this.grid.cell(cell).hasValue();
+    }
+
+    @Override
+    public Grid grid() {
+        return this.grid;
     }
 
 }

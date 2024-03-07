@@ -9,5 +9,6 @@ public interface Logics {
     boolean victory();
     String getNumber(Pair<Integer, Integer> cell);
     boolean hasNumber(Pair<Integer, Integer> cell);
+    Grid grid();
     
 }
